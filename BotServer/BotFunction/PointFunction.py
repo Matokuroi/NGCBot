@@ -110,8 +110,7 @@ class PointFunction:
                     f'@{senderName} Ai对话接口出现错误, 请联系超管查看控制台输出日志',
                     receiver=roomId, aters=sender)
             # Ai画图
-            elif judgeAtMe(self.wcf.self_wxid, content, atUserLists) and judgeOneEqualListWord(noAtMsg,
-                                                                                               self.aiPicKeyWords):
+            elif judgeSplitAllEqualWord(content, self.aiPicKeyWords):
                 aiPicPath = self.Ams.getAiPic(noAtMsg)
                 if aiPicPath:
                     self.wcf.send_image(path=aiPicPath, receiver=roomId)
