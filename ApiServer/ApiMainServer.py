@@ -68,14 +68,6 @@ class ApiMainServer:
         """
         return Ps.Pa.getAiWenIpv4(ip)
 
-    def getThreatBook(self, ip):
-        """
-        微步IP查询调用接口
-        :param ip:
-        :return:
-        """
-        return Ps.Pa.getThreatBook(ip)
-
     def getCmd5(self, ciphertext):
         """
         MD5查询调用接口
@@ -156,15 +148,6 @@ class ApiMainServer:
         :return:
         """
         return Ps.Ha.getEmoticon(avatarPathList, memeKey)
-
-    def getFeishuVuln(self, vulnMsg):
-        """
-        飞书Wiki Api接口
-        :param vulnMsg:
-        :return:
-        """
-        return Ps.Pa.getFeishuVuln(vulnMsg)
-
 
 if __name__ == '__main__':
     Ams = ApiMainServer()
