@@ -111,7 +111,7 @@ class PointFunction:
                     receiver=roomId, aters=sender)
             # Ai画图
             elif judgeSplitAllEqualWord(content, self.aiPicKeyWords):
-                aiPicPath = self.Ams.getAiPic(noAtMsg)
+                aiPicPath = self.Ams.getAiPic(content.split(' ')[-1])
                 if aiPicPath:
                     self.wcf.send_image(path=aiPicPath, receiver=roomId)
                     return
