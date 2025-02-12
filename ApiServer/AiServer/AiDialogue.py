@@ -42,7 +42,7 @@ class AiDialogue:
         self.hunYuanAiConfig = {
             'hunYuanSecretId': configData['apiServer']['aiConfig']['hunYuan']['hunYuanSecretId'],
             'hunYuanSecretKey': configData['apiServer']['aiConfig']['hunYuan']['hunYuanSecretKey'],
-            'hunYuanModel': configData['apiServer']['aiConfig']['hunYuan']['hunYuanSecretKey']
+            'hunYuanModel': configData['apiServer']['aiConfig']['hunYuan']['hunYuanModel']
         }
         self.kiMiConfig = {
             'kiMiApi': configData['apiServer']['aiConfig']['kiMi']['kiMiApi'],
