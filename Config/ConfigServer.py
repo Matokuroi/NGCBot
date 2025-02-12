@@ -36,27 +36,6 @@ def returnFingerConfigData():
     return configData
 
 
-def returnFeishuConfigData():
-    """
-    返回飞书配置文件数据
-    :return:
-    """
-    current_path = returnConfigPath()
-    configData = yaml.load(open(current_path + '/Feishu.yaml', mode='r', encoding='UTF-8'), yaml.Loader)
-    return configData
-
-
-def saveFeishuConfigData(configData):
-    """
-    保存飞书配置
-    :param configData:
-    :return:
-    """
-    current_path = returnConfigPath()
-    with open(current_path + '/Feishu.yaml', mode='w') as file:
-        yaml.dump(configData, file)
-
-
 def returnRoomMsgDbPath():
     return returnConfigPath() + 'RoomMsg.db'
 
