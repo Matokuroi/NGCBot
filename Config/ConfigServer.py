@@ -25,17 +25,6 @@ def returnConfigData():
     configData = yaml.load(open(current_path + '/Config.yaml', mode='r', encoding='UTF-8'), yaml.Loader)
     return configData
 
-
-def returnFingerConfigData():
-    """
-    返回指纹配置文件数据
-    :return:
-    """
-    current_path = returnConfigPath()
-    configData = yaml.load(open(current_path + '/Finger.yaml', mode='r', encoding='UTF-8'), yaml.Loader)
-    return configData
-
-
 def returnRoomMsgDbPath():
     return returnConfigPath() + 'RoomMsg.db'
 
