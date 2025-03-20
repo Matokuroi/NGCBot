@@ -142,7 +142,7 @@ AiConfig:
     # 模型Url
     SparkAiApi: 'https://spark-api-open.xf-yun.com/v1/chat/completions'
     # 模型Key
-    SparkAiKey: 'Bearer a8d46083e7c556061f341e1c8c53e0f1'
+    SparkAiKey: 'Bearer zISkvvowUijILurNYmCL:wkLonpZGjjEyfLngkHiq'
     # 模型名称
     SparkModel: '4.0Ultra'
 
