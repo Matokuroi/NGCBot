@@ -35,19 +35,40 @@ AiConfig:
     8: 'openAi'
     1: 'sparkAi'
     10: 'qianFan'
+    11: 'qwen'
   # 画图Ai优先级
   AiPicPriority:
-    1: 'volcengine'
-    2: 'qianFan'
-    3: 'sparkAi'
+    1: 'bigModel'
+    2: 'volcengine'
+    3: 'qianFan'
+    4: 'qwen'
+    5: 'hunYuan'
+  # Ai图文对话优先级
+  AiPicDiaPriority:
+    1: 'qwen'
+    2: 'volcengine'
+    3: 'hunyuan'
+    4: 'kimi'
   # Ai角色配置
   SystemAiRule: '你叫MatoBot, 你的主人是Mato, 是一名ai管家'
+  # 通义千问
+  QwenConfig:
+    QwenApi: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
+    QwenModel: 'qwen-plus'
+    QwenKey: 'Bearer {key填这里 大括号删了 Bearer保留}'
+    # 通义AI画图配置
+    QwenPicApi: 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text2image/image-synthesis'
+    QwenPicModel: 'wanx2.1-t2i-turbo'
+    # 通义图文对话配置
+    QwenPicChatModel: 'qwen-vl-plus'
   # 火山引擎配置
   VolcengineConfig:
     # 文本对话设置 可以改为其它模型
     VolcengineApi: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
-    VolcengineKey: 'Bearer {key填这里，前面的Bearer保留}'
+    VolcengineKey: 'Bearer {key填这里 大括号删了 Bearer保留}'
     VolcengineModel: 'ep-'
+    # 火山图文对话模型
+    VolcenginePicChatModel: 'doubao-1-5-vision-pro-32k-250115'
     # 文生图需要填写以下内容 不使用文生图不需要填写
     ## ReqKey以及ModelVersion需要根据火山文档填写
     VolcengineAk: '火山AK'
@@ -57,7 +78,7 @@ AiConfig:
   # 硅基流动配置
   SiliconFlowConfig:
     SiliconFlowApi: 'https://api.siliconflow.cn/v1/chat/completions'
-    SiliconFlowKey: 'Bearer {key填这里，前面的Bearer保留}'
+    SiliconFlowKey: 'Bearer {key填这里 大括号删了 Bearer保留}'
     SiliconFlowModel: 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B'
   # Ollama本地模型配置
   OllamaConfig:
@@ -71,54 +92,59 @@ AiConfig:
   # 智谱模型配置
   BigModelConfig:
     BigModelApi: 'https://open.bigmodel.cn/api/paas/v4/chat/completions'
-    BigModelKey: 'Bearer {key填这里，前面的Bearer保留}'
+    BigModelKey: 'Bearer {key填这里 大括号删了 Bearer保留}'
     BigModelModel: 'glm-4-plus'
+    # 文生图配置
+    BigModelPicApi: 'https://open.bigmodel.cn/api/paas/v4/images/generations'
+    BigModelPicModel: 'cogview-4-250304'
   # 月之暗面模型配置
   KiMiConfig:
     KiMiApi: 'https://api.moonshot.cn/v1/chat/completions'
     KiMiKey: ''
     KiMiModel: 'moonshot-v1-8k'
+    # KiMi图文对话模型
+    KiMiPicModel: 'moonshot-v1-8k-vision-preview'
   # 混元模型配置
   HunYuanConfig:
     HunYuanApi: 'https://api.hunyuan.cloud.tencent.com/v1/chat/completions'
-    HunYuanKey: 'sk-'
+    HunYuanKey: 'Bearer {key填这里 大括号删了 Bearer保留}'
     HunYuanModel: 'hunyuan-pro'
+    # 混元生文生图配置
+    HunYuanSecretId: ''
+    HunYuanSecretKey: ''
+    # 混元画图风格 https://cloud.tencent.com/document/product/1729/105846
+    HunYuanPicStyle: 'xieshi'
+    # 混元图文对话模型
+    HunYuanPicChatModel: 'hunyuan-vision'
+
   # 千帆模型配置
   QianFanConfig:
     # 应用中的Api Key
     QfAccessKey: ''
     # 应用中的Secret Key
     QfSecretKey: ''
-    # 应用中的应用ID
-    QfAppid: '46224165'
     # 千帆Ai作画Api 两个key是不一样的 不能通用
     # https://console.bce.baidu.com/ai/#/ai/intelligentwriting/app/detail~appId=5507940
     # 应用中的Api Key
     QfPicAccessKey: ''
     # 应用中的Secret Key
     QfPicSecretKey: ''
-    # 应用中的应用ID
-    QfPicAppid: ''
   # OpenAi模型配置
   OpenAiConfig:
     # Open_Ai接口
     OpenAiApi: 'https://api.xiaoai.plus/v1/chat/completions'
     # OpenAi Key
-    OpenAiKey: 'Bearer {key填这里，前面的Bearer保留}'
+    OpenAiKey: 'Bearer {key填这里 大括号删了 Bearer保留}'
     # 模型版本
     OpenAiModel: 'gpt-3.5-turbo'
   # 星火模型配置
   SparkConfig:
     # 模型Url
-    SparkAiApi: 'wss://spark-api.xf-yun.com/v4.0/chat'
-    # 模型Secret
-    SparkAiSecret: 'NWQ0N2FjZGQyNThjMmI3OWU1MDAwMTdj'
-    # 模型版本
-    SparkDomain: '4.0Ultra'
+    SparkAiApi: 'https://spark-api-open.xf-yun.com/v1/chat/completions'
     # 模型Key
-    SparkAiKey: 'a8d46083e7c556061f341e1c8c53e0f1'
-    # 模型Appid
-    SparkAiAppid: '55ff6cbd'
+    SparkAiKey: 'Bearer a8d46083e7c556061f341e1c8c53e0f1'
+    # 模型名称
+    SparkModel: '4.0Ultra'
 
 # 所有Key配置 [不包含Ai Key配置]
 KeyConfig:
@@ -195,11 +221,11 @@ JoinGroupConfig:
         # 卡片消息标题 最多两行
         title: '欢迎 ❤{}❤ 一起搞机'
         # 摘要 最多三行
-        digest: '【NGCBot V2.2】新版本来袭！全新功能！全新架构！自动化私域管理必备！'
+        digest: 'NGCBot 2.3震撼上线！新增游戏功能！优化游戏架构！新增多渠道Ai对话功能！'
         # 点击后跳转的URL
-        url: 'http://mp.weixin.qq.com/s?__biz=MzkyODMxODUwNQ==&amp;mid=2247493526&amp;idx=1&amp;sn=d0f7675929a314941ad3845769bafdcb&amp;chksm=c21832d0f56fbbc6c4451105df94e39283228e9f6bb69eae00888c4869f5b91e3703bd302e92&amp;mpshare=1&amp;scene=1&amp;srcid=0716KB1OiULdPNzLUXmMVVlV&amp;sharer_shareinfo=dd05c6b9c14d98dc6b745cbf673dabec&amp;sharer_shareinfo_first=24b3af78c3e815a698c81c03a49a0244#rd'
+        url: 'http://mp.weixin.qq.com/s?__biz=MzkyODMxODUwNQ==&amp;mid=2247494386&amp;idx=1&amp;sn=99f23a715f6274d9f96d5273cc54e1e7&amp;chksm=c37ae1446610337ae2964b99ff6c14f23b22f3dc7c196435eb10b9369ae6049c58811eb4eb8f&amp;scene=0&amp;xtrack=1#rd'
         # 缩略图的链接 到控制台输出拿
-        thumbUrl: 'https://mmbiz.qpic.cn/mmbiz_jpg/QABjQccnicQpAnrqNicQd9iaTIQg3TZia6nr3OaAJQS8bOMrdtFct30axbiaO3OTnULGjHpE0RQD0NmT76FWa5daiaZA/300?wxtype=jpeg&amp;wxfrom=401'
+        thumbUrl: 'https://mmbiz.qpic.cn/mmbiz_jpg/QABjQccnicQrEEJpHDTW1Js1zRtzAEnaPDhic0ew5HOTQM8aBlMTGAD3v0InogIwkY4S7ksHgHqrF4dt10v99Q2w/640?wxtype=jpeg&amp;wxfrom=0'
 
 # 功能配置
 FunctionConfig:
@@ -229,16 +255,9 @@ FunctionConfig:
         - 'http://api.yujn.cn/api/zzxjj.php'
         - 'https://api.yujn.cn/api/manzhan.php'
         - 'http://api.yujn.cn/api/rewu.php?type=video'
-        - 'http://api.ovoe.top/API/hbss.php'
-        - 'http://abc.gykj.asia/API/hbss.php'
-        - 'https://api.qtkj.love/api/hbss.php'
         - 'http://api.yujn.cn/api/hanfu.php?type=video'
-        - 'http://abc.gykj.asia/API/gzhf.php'
         - 'http://www.yujn.cn/api/heisis.php'
-        - 'http://api.yujn.cn/api/manyao.php?type=video'
-        - 'https://api.shenke.love/api/mnsp.php?msg=my&type=video'
         - 'http://api.yujn.cn/api/COS.php?type=video'
-        - 'http://abc.gykj.asia/API/ntCOS.php'
         - 'http://api.yujn.cn/api/jksp.php?type=video'
     # Kfc功能配置
     KfcConfig:
@@ -374,8 +393,7 @@ FunctionConfig:
       IdiomSolitaireApi: 'https://api.dudunas.top/api/chengyujielong/'
       StartGameKeyWord: '成语接龙'
       StopGameKeyWord: '结束接龙'
-      GameRound: 5
-
+      GameRound: 10
 
   # 群聊功能配置
   RoomConfig:
@@ -465,8 +483,9 @@ FunctionConfig:
 # 自定义关键词回复配置
 CustomConfig:
   # 设置关键词
-  '谁是我们群的渣男':
-    - '@Include 这是渣男'
+  '关键词1':
+    - '回复内容1'
+    - '回复内容2'
   '关键词2':
     - '回复内容1'
     - '回复内容2'

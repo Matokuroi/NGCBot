@@ -6,6 +6,33 @@ import time
 import os
 import re
 
+def getUserLabel(wcf, sender):
+    """
+    获取用户所属的标签列表
+    :param sender:
+    :return:
+    """
+    try:
+        userInfos = wcf.query_sql("MicroMsg.db", f'SELECT * FROM Contact WHERE UserName ="{sender}"')
+        if not userInfos:
+            return []
+        userInfo = userInfos[0]
+        labelLists = wcf.query_sql("MicroMsg.db", f"SELECT * FROM ContactLabel")
+        userLabelIds = userInfo.get('LabelIDList').split(',')
+        userLabels = []
+        for labelDict in labelLists:
+            labelId = labelDict.get('LabelId')
+            labelName = labelDict.get('LabelName')
+            for userLabelId in userLabelIds:
+                if not userLabelId:
+                    continue
+                if int(userLabelId) == int(labelId):
+                    userLabels.append(labelName)
+        return userLabelIds
+    except Exception as e:
+        op(f'[-]: 获取用户所属的标签列表出现错误, 错误信息: {e}')
+        return []
+
 def getQuoteImageData(content):
     """
     提取引用图片消息的ID和 Type 以及 用户发送的内容
@@ -24,12 +51,12 @@ def getQuoteImageData(content):
                 return int(typeValue), int(srvId), titleValue
             return None, None, None
     except Exception:
-        return None, None, None
+        return 0, None, None
 
 
 def downloadQuoteImage(wcf, imageMsgId, extra):
     """
-    下载图片
+    下载引用消息的图片
     :param wcf:
     :param imageMsgId:
     :param extra:
