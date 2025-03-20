@@ -5,6 +5,7 @@ from DbServer.DbRoomServer import DbRoomServer
 from DbServer.DbSignServer import DbSignServer
 from DbServer.DbInitServer import DbInitServer
 from DbServer.DbGhServer import DbGhServer
+from DbServer.DbYinyServer import DbYinyServer
 import Config.ConfigServer as Cs
 from OutPut.outPut import op
 
@@ -18,6 +19,7 @@ class DbMainServer:
         self.Dis = DbInitServer()
         self.Dgs = DbGhServer()
         self.Dms = DbRoomMsgServer()
+        self.Dyy = DbYinyServer()
         self.configData = Cs.returnConfigData()
 
     def searchRoomMsgTable(self, tableName):
@@ -329,6 +331,21 @@ class DbMainServer:
         """
         return self.Dgs.showBlackGh()
 
+    def addPushYiny(self, roomId, roomName):
+        """
+        添加推送群聊
+        :param roomName:
+        :param roomId:
+        :return:
+        """
+        self.Dyy.addPushYiny(roomId, roomName)
+
+    def showPushYiny(self, ):
+        """
+        查看所有推送群聊
+        :return:
+        """
+        return self.Dyy.showPushYiny()
 
 if __name__ == '__main__':
     Ds = DbMainServer()

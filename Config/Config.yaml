@@ -2,11 +2,10 @@
 SystemConfig:
   # 超级管理员配置
   Administrators:
-    - 'wxid_7bizfilssbwi22'
-    - 'wxid2'
-    - '.....'
+    - 'wxid_8et3z7i8d8n122'
+    - 'wxid_p9wsbtm2hx9k21'
   #系统版权信息
-  SystemCopyright: 'NGC660安全实验室'
+  SystemCopyright: 'MatoKuroi'
   # 好友Ai开关 以下功能都是 1开/0关
   AiLock: 1
   # 自动接收转账
@@ -26,15 +25,15 @@ AiConfig:
   # 修改序号即可修改优先对话模型
   # 注意大小写 否则无效
   AiPriority:
-    1: 'deepSeek'
-    2: 'siliconFlow'
+    2: 'deepSeek'
+    9: 'siliconFlow'
     3: 'volcengine'
-    4: 'bigModel'
+    6: 'bigModel'
     5: 'kiMi'
-    6: 'hunYuan'
+    4: 'hunYuan'
     7: 'ollama'
     8: 'openAi'
-    9: 'sparkAi'
+    1: 'sparkAi'
     10: 'qianFan'
   # 画图Ai优先级
   AiPicPriority:
@@ -42,7 +41,7 @@ AiConfig:
     2: 'qianFan'
     3: 'sparkAi'
   # Ai角色配置
-  SystemAiRule: '你叫NGCBot, 你的主人是云山, 你隶属于NGC660安全实验室，是一名网络安全专家'
+  SystemAiRule: '你叫MatoBot, 你的主人是Mato, 是一名ai管家'
   # 火山引擎配置
   VolcengineConfig:
     # 文本对话设置 可以改为其它模型
@@ -67,17 +66,17 @@ AiConfig:
   # DeepSeek官网模型配置
   DeepSeekConfig:
     DeepSeekApi: 'https://api.deepseek.com/chat/completions'
-    DeepSeekKey: 'Bearer sk-'
+    DeepSeekKey: 'Bearer sk-aipwkoisduklzdmgiecvddguaqyhjcebhgthcqmdykddeafq'
     DeepSeekModel: 'deepseek-chat'
   # 智谱模型配置
   BigModelConfig:
     BigModelApi: 'https://open.bigmodel.cn/api/paas/v4/chat/completions'
-    BigModelKey: 'Bearer '
+    BigModelKey: 'Bearer {key填这里，前面的Bearer保留}'
     BigModelModel: 'glm-4-plus'
   # 月之暗面模型配置
   KiMiConfig:
     KiMiApi: 'https://api.moonshot.cn/v1/chat/completions'
-    KiMiKey: 'sk-'
+    KiMiKey: ''
     KiMiModel: 'moonshot-v1-8k'
   # 混元模型配置
   HunYuanConfig:
@@ -91,7 +90,7 @@ AiConfig:
     # 应用中的Secret Key
     QfSecretKey: ''
     # 应用中的应用ID
-    QfAppid: ''
+    QfAppid: '46224165'
     # 千帆Ai作画Api 两个key是不一样的 不能通用
     # https://console.bce.baidu.com/ai/#/ai/intelligentwriting/app/detail~appId=5507940
     # 应用中的Api Key
@@ -99,13 +98,13 @@ AiConfig:
     # 应用中的Secret Key
     QfPicSecretKey: ''
     # 应用中的应用ID
-    QfPicAppid: '92991265'
+    QfPicAppid: ''
   # OpenAi模型配置
   OpenAiConfig:
     # Open_Ai接口
     OpenAiApi: 'https://api.xiaoai.plus/v1/chat/completions'
     # OpenAi Key
-    OpenAiKey: 'Bearer sk-'
+    OpenAiKey: 'Bearer {key填这里，前面的Bearer保留}'
     # 模型版本
     OpenAiModel: 'gpt-3.5-turbo'
   # 星火模型配置
@@ -113,13 +112,13 @@ AiConfig:
     # 模型Url
     SparkAiApi: 'wss://spark-api.xf-yun.com/v4.0/chat'
     # 模型Secret
-    SparkAiSecret: ''
+    SparkAiSecret: 'NWQ0N2FjZGQyNThjMmI3OWU1MDAwMTdj'
     # 模型版本
     SparkDomain: '4.0Ultra'
     # 模型Key
-    SparkAiKey: ''
+    SparkAiKey: 'a8d46083e7c556061f341e1c8c53e0f1'
     # 模型Appid
-    SparkAiAppid: 'b1ea4bca'
+    SparkAiAppid: '55ff6cbd'
 
 # 所有Key配置 [不包含Ai Key配置]
 KeyConfig:
@@ -129,13 +128,13 @@ KeyConfig:
     Cmd5Key: ''
   # 埃文配置
   AiWenConfig:
-    AiWenKey: ''
+    AiWenKey: 'bBgb2NmP1cujQefqe3sW7bZdWgfdgcUSZZ7NlOAMSiuFHvW5UppukCBPJa3KnSwW'
   # 高德配置
   GaoDeConfig:
-    GaoDeKey: ''
+    GaoDeKey: 'fe5a759231f236b4dfcf61dd8ecc105d'
   # Dp接口配置
   DpConfig:
-    DpKey: ''
+    DpKey: '46d7722aeb9acb393fc1c89be8c1ca9b'
 
 # 定时推送配置
 ScheduledConfig:
@@ -147,12 +146,19 @@ ScheduledConfig:
   FishTime: '10:00'
   # KFC文案推送时间配置
   KfcTime: '11:50'
+  # 洋姐专属推送时间设置
+  yinyTime: '12:10'
+  yinyOffWorkTime: '17:20'
   # 下班推送配置
   OffWorkConfig:
     #下班推送时间配置
     OffWorkTime: '18:00'
     # 下班推送内容配置 \n换行
-    OffWorkMsg: '下班时间到！我要下班 我要下班 我要下班 下下下！\n到点即刻下班，给老板省去水电，给自己来套保健，给老板来句操蛋，出自: #NGC660安全实验室\n速速下班！！！[旺柴]'
+    OffWorkMsg: '下班时间到！我要下班 我要下班 我要下班 下下下！\n到点即刻下班，给老板省去水电，给自己来套保健，给老板来句操蛋，出自: #凡凡凡\n速速下班！！！[旺柴]'
+  # 定时功能回复配置
+  keyWord:
+    # 洋姐专属微信推送消息 换行用\n 支持微信表情
+    yinyMsg: '@YINY 🐑🐑🐑记账啦~~~~ \n https://docs.qq.com/sheet/DQWRpUm1Jam92WHpD?%3FlayoutKey=newsheet&no_promotion=1&tab=jl4uce'
 
 # 进群配置(关键词进群/进群欢迎)
 JoinGroupConfig:
@@ -308,6 +314,15 @@ FunctionConfig:
         - 'HELP'
         - '帮助菜单'
         - '菜单'
+    # 对话
+    yinyMatoConfig:
+      yinyMatoKeyWords:
+        - '你主人是谁？'
+        - '你主人老婆是谁?'
+        - '你会啥？'
+        - '你是人吗？'
+        - '洋姐记账'
+        - '凡凡凡记账'
 
   # 积分功能配置 Ai功能不在此处 Ai关键词在此处配置
   PointFunctionConfig:
@@ -412,6 +427,9 @@ FunctionConfig:
     DelPushRoomKeyWords:
       - '关闭推送服务'
       - '关闭推送'
+    AddPushYinyKeyWords:
+      - '开启洋姐专属推送服务'
+      - '开启洋姐专属推送'
     AddBlackGhKeyWords:
       - '黑号'
       - '拉黑'
@@ -447,9 +465,8 @@ FunctionConfig:
 # 自定义关键词回复配置
 CustomConfig:
   # 设置关键词
-  '关键词1':
-    - '回复内容1'
-    - '回复内容2'
+  '谁是我们群的渣男':
+    - '@Include 这是渣男'
   '关键词2':
     - '回复内容1'
     - '回复内容2'

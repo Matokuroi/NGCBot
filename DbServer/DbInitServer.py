@@ -10,7 +10,7 @@ class DbInitServer:
         self.roomDb = Cs.returnRoomDbPath()
         self.ghDb = Cs.returnGhDbPath()
         self.roomMsgDb = Cs.returnRoomMsgDbPath()
-
+        self.yinyDb = Cs.returnYinyDbPath()
 
 
     def initDb(self, ):
@@ -44,6 +44,10 @@ class DbInitServer:
         roomMsgConn, roomMsgCursor = Dds.openDb(self.roomMsgDb)
         Dds.closeDb(roomMsgConn, roomMsgCursor)
 
+        # 初始化群聊数据库 黑名单群聊数据表 白名单群聊数据表 推送群聊数据表 所有群聊数据表
+        yinyConn, yinyCursor = Dds.openDb(self.yinyDb)
+        Dds.createTable(yinyCursor, 'pushYiny', 'yinyId varchar(255), yinyName varchar(255)')
+        Dds.closeDb(yinyConn, yinyCursor)
 
         op(f'[+]: 数据库初始化成功！！！')
 

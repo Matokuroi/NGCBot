@@ -43,3 +43,6 @@ def returnGhDbPath():
 
 def returnPointDbPath():
     return returnConfigPath() + 'Point.db'
+
+def returnYinyDbPath():
+    return returnConfigPath() + 'Yiny.db'

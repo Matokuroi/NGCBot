@@ -29,6 +29,7 @@ class HappyFunction:
         self.eveningPageKeyWords = configData['FunctionConfig']['HappyFunctionConfig']['EveningPageConfig'][
             'EveningPageKeyWords']
         self.helpKeyWords = configData['FunctionConfig']['HappyFunctionConfig']['HelpMenuConfig']['HelpMenuKeyWords']
+        self.yinyMatoKeyWords = configData['FunctionConfig']['HappyFunctionConfig']['yinyMatoConfig']['yinyMatoKeyWords']
         self.taLuoWords = configData['FunctionConfig']['HappyFunctionConfig']['TaLuoConfig']['TaLuoKeyWords']
         self.musicWords = configData['FunctionConfig']['HappyFunctionConfig']['MusicConfig']['MusicKeyWords']
         self.dyVideoAnalysisKeyWords = configData['FunctionConfig']['HappyFunctionConfig']['DyVideoAnalysisConfig']['DyVideoAnalysisKeyWords']
@@ -229,6 +230,22 @@ class HappyFunction:
                 helpMsg += '【二、娱乐功能】\n2.1、美女图片(图片)\n2.2、美女视频(视频)\n2.3、摸鱼日历(摸鱼日历)\n2.4、舔狗日记(舔我)\n2.5、早报(早报)\n2.6、晚报(晚报)\n2.6、表情列表(表情列表)\n2.7、随机表情(随机表情, 有几率报错)\n'
                 helpMsg += '[爱心]=== NGCBot菜单 ===[爱心]\n'
                 self.wcf.send_text(f'@{getIdName(self.wcf, sender, roomId)}\n{helpMsg}', receiver=roomId, aters=sender)
+            # 对话
+            elif judgeEqualListWord(content, self.yinyMatoKeyWords):
+                yinyMatoMsg = 'hello'
+                if content == '你主人是谁？':
+                    yinyMatoMsg = '我主人是宇宙无敌超级大帅哥的凡凡凡，当然，你也可以叫我小管家~'
+                elif content == '你主人老婆是谁?':
+                    yinyMatoMsg = '尹洋！这可是国家机密，一般人我不告诉他！'
+                elif content == '你会啥？':
+                    yinyMatoMsg = '除了不会生孩子，我啥都会一点点... 嘿嘿！'
+                elif content == '你是人吗？':
+                    yinyMatoMsg = '哎呀，讨厌啦！人家只是一个没有感情的... 代码块！嘤嘤嘤~'
+                elif content == '洋姐记账':
+                    yinyMatoMsg = '🐑🐑🐑记账啦~~~~  https://docs.qq.com/sheet/DQWRpUm1Jam92WHpD?%3FlayoutKey=newsheet&no_promotion=1&tab=jl4uce'
+                elif content == '凡凡凡记账':
+                    yinyMatoMsg = '凡凡凡记账啦~~~~  https://docs.qq.com/sheet/DQWRpUm1Jam92WHpD?%3FlayoutKey=newsheet&no_promotion=1&tab=jl4uce'
+                self.wcf.send_text(f'@{getIdName(self.wcf, sender, roomId)}\n{yinyMatoMsg}', receiver=roomId, aters=sender)
         elif msgType == 49:
             # 视频号解析
             objectId, objectNonceId = getWechatVideoData(content)

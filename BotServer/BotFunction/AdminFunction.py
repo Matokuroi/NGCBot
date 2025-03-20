@@ -24,6 +24,7 @@ class AdminFunction:
         self.addBlackGhKeyWords = configData['FunctionConfig']['AdminFunctionConfig']['AddBlackGhKeyWords']
         self.delBlackGhKeyWords = configData['FunctionConfig']['AdminFunctionConfig']['DelBlackGhKeyWords']
         self.delUserKeyWords = configData['FunctionConfig']['AdminFunctionConfig']['DelUserKeyWords']
+        self.addPushYinyKeyWords = configData['FunctionConfig']['AdminFunctionConfig']['AddPushYinyKeyWords']
         
         # 积分功能关键词配置
         self.addPointKeyWords = configData['FunctionConfig']['AdminFunctionConfig']['AddPointKeyWords']
@@ -97,6 +98,14 @@ class AdminFunction:
             elif judgeEqualListWord(content, self.delPushRoomKeyWords):
                 if self.Dms.delPushRoom(roomId):
                     self.wcf.send_text(f'@{getIdName(self.wcf, sender, roomId)} 此群已关闭推送服务 !!!', receiver=roomId, aters=sender)
+                # 添加推送群聊
+            elif judgeEqualListWord(content, self.addPushYinyKeyWords):
+                if self.Dms.addPushYiny(roomId, roomName):
+                    self.wcf.send_text(f'@{getIdName(self.wcf, sender, roomId)} 开启洋姐专属推送服务成功 !!!',
+                                       receiver=roomId, aters=sender)
+                    return
+                self.wcf.send_text(f'@{getIdName(self.wcf, sender, roomId)} 此群已开启洋姐专属推送服务 !!!',
+                                   receiver=roomId, aters=sender)
             # 踢人
             elif judgeEqualListWord(noAtMsg, self.delUserKeyWords):
                 for atWxId in atUserLists:

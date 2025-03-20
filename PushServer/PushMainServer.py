@@ -19,6 +19,9 @@ class PushMainServer:
         self.offWorkMsg = configData['ScheduledConfig']['OffWorkConfig']['OffWorkMsg']
         self.fishTime = configData['ScheduledConfig']['FishTime']
         self.kfcTime = configData['ScheduledConfig']['KfcTime']
+        self.yinyTime = configData['ScheduledConfig']['yinyTime']
+        self.yinyOffWorkTime = configData['ScheduledConfig']['yinyOffWorkTime']
+        self.yinyMsg = configData['ScheduledConfig']['keyWord']['yinyMsg']
 
     def pushMorningPage(self, ):
         """
@@ -55,6 +58,18 @@ class PushMainServer:
         for room_id in room_dicts.keys():
             self.wcf.send_text(msg=offWorkMsg, receiver=room_id)
         op('[+]: 定时下班消息推送成功！！！')
+
+    def pushYiny(self, ):
+        """
+        定时洋姐专属推送
+        :return:
+        """
+        op('[*]: 定时洋姐专属消息推送中... ...')
+        yinyMsg = self.yinyMsg.replace('\\n', '\n')
+        room_dicts = self.Dms.showPushYiny()
+        for room_id in room_dicts.keys():
+            self.wcf.send_text(msg=yinyMsg, receiver=room_id)
+        op('[+]: 定时洋姐专属消息推送成功！！！')
 
     # 摸鱼日记推送
     def pushFish(self):
@@ -131,6 +146,8 @@ class PushMainServer:
         schedule.every().day.at('00:00').do(self.clearSign)
         schedule.every().day.at('03:00').do(self.clearCacheFile)
         schedule.every().weeks.monday.at("00:00").do(self.clearRoomTableData)
+        schedule.every().day.at(self.yinyTime).do(self.pushYiny)
+        schedule.every().day.at(self.yinyOffWorkTime).do(self.pushYiny)
         op(f'[+]: 已开启定时推送服务！！！')
         while self.stopFlag:
             schedule.run_pending()
