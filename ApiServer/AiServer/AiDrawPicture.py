@@ -4,7 +4,8 @@ from tencentcloud.common.profile.http_profile import HttpProfile
 from volcengine.visual.VisualService import VisualService
 from tencentcloud.common import credential
 import FileCache.FileCacheServer as Fcs
-import Config.ConfigServer as Cs
+from ApiServer.InterFaceServer import *
+from Config.ConfigData import *
 from OutPut.outPut import op
 import requests
 import base64
@@ -12,65 +13,9 @@ import time
 import json
 
 
-
 class AiDrawPicture:
     def __init__(self):
-        configData = Cs.returnConfigData()
-        self.systemAiRole = configData['AiConfig']['SystemAiRule']
-        # 百度千帆配置
-        self.QianfanAiConfig = {
-            'QfPicAccessKey': configData['AiConfig']['QianFanConfig']['QfPicAccessKey'],
-            'QfPicSecretKey': configData['AiConfig']['QianFanConfig']['QfPicSecretKey'],
-        }
-        # 豆包配置
-        self.VolcengineConfig = {
-            'VolcengineAk': configData['AiConfig']['VolcengineConfig']['VolcengineAk'],
-            'VolcengineSk': configData['AiConfig']['VolcengineConfig']['VolcengineSk'],
-            'VolcengineReqKey': configData['AiConfig']['VolcengineConfig']['VolcengineReqKey'],
-            'VolcenginePicModelVersion': configData['AiConfig']['VolcengineConfig']['VolcenginePicModelVersion']
-        }
-        # 通义配置
-        self.QwenConfig = {
-            'QwenPicApi': configData['AiConfig']['QwenConfig']['QwenPicApi'],
-            'QwenPicModel': configData['AiConfig']['QwenConfig']['QwenPicModel'],
-            'QwenKey': configData['AiConfig']['QwenConfig']['QwenKey'],
-        }
-        # 智谱配置
-        self.BigModelConfig = {
-            'BigModelPicApi': configData['AiConfig']['BigModelConfig']['BigModelPicApi'],
-            'BigModelPicModel': configData['AiConfig']['BigModelConfig']['BigModelPicModel'],
-            'BigModelKey': configData['AiConfig']['BigModelConfig']['BigModelKey'],
-        }
-        # 腾讯混元配置
-        self.HunYuanAiConfig = {
-            'HunYuanSecretId': configData['AiConfig']['HunYuanConfig']['HunYuanSecretId'],
-            'HunYuanSecretKey': configData['AiConfig']['HunYuanConfig']['HunYuanSecretKey'],
-            'HunYuanPicStyle': configData['AiConfig']['HunYuanConfig']['HunYuanPicStyle'],
-        }
-
-        # 初始化消息列表
-        self.userChatDicts = {}
-
-        # AI画图优先级配置
-        self.aiPicPriority = configData['AiConfig']['AiPicPriority']
-
-    def downloadFile(self, url, savePath):
-        """
-        通用下载文件函数
-        :param url:
-        :param savePath:
-        :return:
-        """
-        try:
-            content = requests.get(url, timeout=30, verify=True).content
-            if len(content) < 200:
-                return None
-            with open(savePath, mode='wb') as f:
-                f.write(content)
-            return savePath
-        except Exception as e:
-            op(f'[-]: 通用下载文件函数出现错误, 错误信息: {e}')
-            return None
+        pass
 
     def getQianFanPic(self, content):
         """
@@ -87,8 +32,8 @@ class AiDrawPicture:
                 }
                 query = {
                     'grant_type': 'client_credentials',
-                    'client_id': self.QianfanAiConfig.get('QfPicAccessKey'),
-                    'client_secret': self.QianfanAiConfig.get('QfPicSecretKey'),
+                    'client_id': getQianFanConfig().get('QfPicAccessKey'),
+                    'client_secret': getQianFanConfig().get('QfPicSecretKey'),
                 }
                 resp = requests.post('https://aip.baidubce.com/oauth/2.0/token', headers=headers, data=query)
                 access_token = resp.json()['access_token']
@@ -155,15 +100,15 @@ class AiDrawPicture:
 
     def getVolcenginePic(self, content):
         op(f'[*]: 正在调用火山引擎文生图模型... ...')
-        if not self.VolcengineConfig.get('VolcengineAk'):
+        if not getVolcengineConfig().get('VolcengineAk'):
             op(f'[-]: 火山引擎文生图模型未配置, 请检查相关配置!!!')
             return None
         visual_service = VisualService()
-        visual_service.set_ak(self.VolcengineConfig.get('VolcengineAk'))
-        visual_service.set_sk(self.VolcengineConfig.get('VolcengineSk'))
+        visual_service.set_ak(getVolcengineConfig().get('VolcengineAk'))
+        visual_service.set_sk(getVolcengineConfig().get('VolcengineSk'))
         data = {
-            'req_key': self.VolcengineConfig.get('VolcengineReqKey'),
-            'model_version': self.VolcengineConfig.get('VolcenginePicModelVersion'),
+            'req_key': getVolcengineConfig().get('VolcengineReqKey'),
+            'model_version': getVolcengineConfig().get('VolcenginePicModelVersion'),
             'prompt': content,
         }
         try:
@@ -187,7 +132,7 @@ class AiDrawPicture:
 
         def getTaskStatus(taskId):
             headers = {
-                'Authorization': self.QwenConfig.get('QwenKey')
+                'Authorization': f"Bearer {getQwenConfig().get('QwenKey')}"
             }
             taskApi = f'https://dashscope.aliyuncs.com/api/v1/tasks/{taskId}'
             try:
@@ -205,16 +150,16 @@ class AiDrawPicture:
             except Exception:
                 return None
 
-        if not self.QwenConfig.get('QwenKey'):
+        if not getQwenConfig().get('QwenKey'):
             op(f'[-]: 通义千问文生图模型未配置, 请检查相关配置!!!')
             return None
         headers = {
             'Content-Type': 'application/json',
-            'Authorization': self.QwenConfig.get('QwenKey'),
+            'Authorization': f"Bearer {getQwenConfig().get('QwenKey')}",
             'X-DashScope-Async': 'enable'
         }
         data = {
-            'model': self.QwenConfig.get('QwenPicModel'),
+            'model': getQwenConfig().get('QwenPicModel'),
             'input': {
                 'prompt': content
             },
@@ -224,7 +169,7 @@ class AiDrawPicture:
             }
         }
         try:
-            resp = requests.post(self.QwenConfig.get('QwenPicApi'), headers=headers, json=data)
+            resp = requests.post(getQwenConfig().get('QwenPicApi'), headers=headers, json=data)
             jsonData = resp.json()
             task_id = jsonData.get('output').get('task_id')
             if not task_id:
@@ -238,7 +183,7 @@ class AiDrawPicture:
             if not imgUrl:
                 return None
             savePath = Fcs.returnAiPicFolder() + '/' + str(int(time.time() * 1000)) + '.jpg'
-            imgPath = self.downloadFile(imgUrl, savePath)
+            imgPath = Ifa.downloadFile(imgUrl, savePath)
             if imgPath:
                 return imgPath
             return None
@@ -253,22 +198,22 @@ class AiDrawPicture:
         :return:
         """
         op(f'[*]: 正在调用智谱文生图模型... ...')
-        if not self.BigModelConfig.get('BigModelKey'):
+        if not getBigModelConfig().get('BigModelKey'):
             op(f'[-]: 智谱文生图模型未配置, 请检查相关配置!!!')
             return None
         try:
             headers = {
-                "Authorization": self.BigModelConfig.get('BigModelKey'),
+                "Authorization": f"Bearer {getBigModelConfig().get('BigModelKey')}",
                 "Content-Type": "application/json"
             }
             data = {
-                "model": self.BigModelConfig.get('BigModelPicModel'),
+                "model": getBigModelConfig().get('BigModelPicModel'),
                 "prompt": content,
             }
-            resp = requests.post(self.BigModelConfig.get('BigModelPicApi'), headers=headers, json=data)
+            resp = requests.post(getBigModelConfig().get('BigModelPicApi'), headers=headers, json=data)
             ImgUrl = resp.json()['data'][0]['url']
             savePath = Fcs.returnAiPicFolder() + '/' + str(int(time.time() * 1000)) + '.jpg'
-            imgPath = self.downloadFile(ImgUrl, savePath)
+            imgPath = Ifa.downloadFile(ImgUrl, savePath)
             if imgPath:
                 return imgPath
             return None
@@ -306,13 +251,14 @@ class AiDrawPicture:
             except Exception as e:
                 op(f'[-]: 查询混元JobId出现错误, 错误信息: {e}')
                 return None
+
         try:
             op(f'[*]: 正在调用混元文生图模型... ...')
-            if not self.HunYuanAiConfig.get('HunYuanSecretId'):
+            if not getHunYuanConfig().get('HunYuanSecretId'):
                 op(f'[-]: 混元文生图模型未配置, 请检查相关配置!!!')
                 return None
-            cred = credential.Credential(self.HunYuanAiConfig.get('HunYuanSecretId'),
-                                         self.HunYuanAiConfig.get('HunYuanSecretKey'))
+            cred = credential.Credential(getHunYuanConfig().get('HunYuanSecretId'),
+                                         getHunYuanConfig().get('HunYuanSecretKey'))
             httpProfile = HttpProfile()
             httpProfile.endpoint = "hunyuan.tencentcloudapi.com"
             clientProfile = ClientProfile()
@@ -321,7 +267,7 @@ class AiDrawPicture:
             req = models.SubmitHunyuanImageJobRequest()
             params = {
                 "Prompt": content,
-                "Style": self.HunYuanAiConfig.get('HunYuanPicStyle')
+                "Style": getHunYuanConfig().get('HunYuanPicStyle')
             }
             req.from_json_string(json.dumps(params))
             resp = client.SubmitHunyuanImageJob(req)
@@ -338,7 +284,7 @@ class AiDrawPicture:
             if not imageUrl:
                 return None
             filePath = Fcs.returnAiPicFolder() + '/' + str(int(time.time() * 1000)) + '.jpg'
-            imgPath = self.downloadFile(imageUrl, filePath)
+            imgPath = Ifa.downloadFile(imageUrl, filePath)
             if imgPath:
                 return imgPath
             return None
@@ -354,7 +300,7 @@ class AiDrawPicture:
         """
         picPath = ''
         for i in range(1, 6):
-            aiPicModule = self.aiPicPriority.get(i)
+            aiPicModule = getaiPicPriority().get(i)
             if aiPicModule == 'qianFan':
                 picPath = self.getQianFanPic(content)
             if aiPicModule == 'volcengine':

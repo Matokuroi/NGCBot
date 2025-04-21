@@ -33,25 +33,26 @@ class RoomMsgHandle:
         self.Asf = AdministratorFunction(self.wcf)
         self.Rmf = RoomMsgFunction(self.wcf)
         configData = Cs.returnConfigData()
-        
+
         # 管理员配置
         self.Administrators = configData['SystemConfig']['Administrators']
-        
+
         # 功能关键词配置
         self.aiWenKeyWords = configData['FunctionConfig']['PointFunctionConfig']['AiWenIpConfig']['AiWenKeyWords']
         self.md5KeyWords = configData['FunctionConfig']['PointFunctionConfig']['Cmd5Config']['Cmd5KeyWords']
         self.aiPicKeyWords = configData['FunctionConfig']['PointFunctionConfig']['AiPicConfig']['AiPicKeyWords']
-        
+
         # 积分配置
         self.aiWenPoint = configData['FunctionConfig']['PointFunctionConfig']['PointConfig']['AiWenPoint']
         self.md5Point = configData['FunctionConfig']['PointFunctionConfig']['PointConfig']['Cmd5Point']
         self.aiMsgPoint = configData['FunctionConfig']['PointFunctionConfig']['PointConfig']['AiMsgPoint']
         self.aiPicPoint = configData['FunctionConfig']['PointFunctionConfig']['PointConfig']['AiPicPoint']
-        
+
         # 签到配置
         self.signKeyWord = configData['FunctionConfig']['PointFunctionConfig']['SignConfig']['SignKeyWord']
-        self.searchPointKeyWord = configData['FunctionConfig']['PointFunctionConfig']['SearchPointConfig']['SearchPointKeyWords']
-        
+        self.searchPointKeyWord = configData['FunctionConfig']['PointFunctionConfig']['SearchPointConfig'][
+            'SearchPointKeyWords']
+
         # 自定义消息配置
         self.joinRoomMsg = configData['JoinGroupConfig']['JoinGroupMsgConfig']['JoinGroupDefaultMsg']
         self.joinRoomCardData = configData['JoinGroupConfig']['JoinGroupMsgConfig']['JoinRoomCard']
@@ -79,10 +80,13 @@ class RoomMsgHandle:
         elif judgeBlackRoom(roomId):
             # 超管功能以及管理功能
             self.AdminFunction(msg)
+            # 入群欢迎
+            Thread(target=self.JoinRoomWelcome, args=(msg,)).start()
             # 超管和管理才能使用娱乐和积分功能
             if sender in self.Administrators or judgeAdmin(sender, roomId):
                 Thread(target=self.Asf.mainHandle, args=(msg,)).start()
                 Thread(target=self.Af.mainHandle, args=(msg,)).start()
+
         # 推送群聊功能
         elif judgePushRoom(roomId):
             # 超管功能以及管理功能
@@ -92,21 +96,13 @@ class RoomMsgHandle:
             # 娱乐功能 和 积分功能
             Thread(target=self.HappyFunction, args=(msg,)).start()
             # 推送群聊才可以使用群聊总结功能&撤回消息检测功能&发言排行榜功能&定时推送总结
-            Thread(target=self.Rmf.mainHandle, args=(msg, )).start()
+            Thread(target=self.Rmf.mainHandle, args=(msg,)).start()
         # 普通群聊功能
         else:
             # 超管功能以及管理功能
             self.AdminFunction(msg)
             # 娱乐功能 和 积分功能
             Thread(target=self.HappyFunction, args=(msg,)).start()
-
-
-    def RoomMsgFunction(self, msg):
-        """
-        群聊消息服务
-        :param msg:
-        :return:
-        """
 
 
     def JoinRoomWelcome(self, msg):
@@ -163,7 +159,7 @@ class RoomMsgHandle:
         """
         # 娱乐功能
         Thread(target=self.Hf.mainHandle, args=(msg,)).start()
-        Thread(target=self.Gf.mainHandle, args=(msg, )).start()
+        Thread(target=self.Gf.mainHandle, args=(msg,)).start()
         # 超管和普通管理不需要积分调用积分功能
         if msg.sender in self.Administrators or judgeAdmin(msg.sender, msg.roomid):
             # 积分功能
@@ -211,9 +207,8 @@ class RoomMsgHandle:
             if judgePointFunction(senderPoint, self.md5Point):
                 self.Dms.reducePoint(sender, roomId, self.md5Point)
                 lock = 1
-        # Ai对话
-        elif judgeAtMe(self.wcf.self_wxid, content, atUserLists) and not judgeOneEqualListWord(noAtMsg,
-                                                                                               self.aiPicKeyWords):
+        # Ai对话 & 图文对话 & 引用Ai回复
+        elif judgeAtMe(self.wcf.self_wxid, content, atUserLists):
             pointLock = 1
             if judgePointFunction(senderPoint, self.aiMsgPoint):
                 self.Dms.reducePoint(sender, roomId, self.aiMsgPoint)

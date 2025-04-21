@@ -7,7 +7,7 @@ NGCBot V2.3
 
 <h5 align="center">
 一个基于✨HOOK机制的微信机器人，支持🌱安全新闻定时推送【FreeBuf，先知，安全客，奇安信攻防社区】，👯Kfc文案，⚡漏洞查询，⚡手机号归属地查询，⚡知识库查询，🎉星座查询，⚡天气查询，🌱摸鱼日历，⚡微步威胁情报查询，
-🐛视频，⚡图片，👯帮助菜单。📫 支持积分功能，⚡支持自动拉人，，🌱自动群发，👯Ai回复，⚡视频号解析，😄自定义程度丰富，小白也可轻松上手！
+🐛视频，⚡图片，👯帮助菜单。📫 支持积分功能，⚡支持自动拉人，，🌱自动群发，👯Ai回复，⚡视频号解析，😄自定义程度丰富，小白也可轻松上手！已支持MCP~
 </h5>
 <div style="text-align: center">
     <a href="http://ngc660.cn">
@@ -21,6 +21,7 @@ NGCBot V2.3
     <img src="https://img.shields.io/badge/license-GPL--3.0-orange">
     <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/v/release/ngc660sec/NGCBot?color=blueviolet&display_name=tag&include_prereleases&label=Release">
 </div>
+
 
 
 
@@ -102,6 +103,7 @@ NGCBot V2.3
 ├─OutPut																							# 消息输出文件夹
 │  │  outPut.py																				# 消息输出服务文件
 ├─PushServer																					# 推送服务文件夹
+├─WebServer																						# WebServer服务文件夹
 │  │  PushMainServer.py																# 推送服务主文件
 ```
 
@@ -153,10 +155,15 @@ python main.py
 
 视频已经上传至B站，Github放不了，要看的话大家去B站看即可，此教程为快速上手+开发指南
 
-https://www.bilibili.com/video/BV1voqwYAEWs/
+先看完视频再使用！
 
+NGCBot V2.3食用指南：https://www.bilibili.com/video/BV1GTdeYaEsE/
 
 ### 3.3、配置文件快速配置
+
+可以使用硅基流动，点击此链接注册：
+
+https://cloud.siliconflow.cn/i/M3ytr9bQ
 
 如果启动成功，下一步配置所需的`Key`，**Ai 对话**等功能都需要用到 `Key`
 
@@ -242,7 +249,7 @@ https://www.bilibili.com/video/BV1voqwYAEWs/
 
 访问目标[官网](https://api.dudunas.top/)
 
-![image-20241230145000784](./README.assets/image-20241230145000784.png)
+![image-20250414133949788](./README.assets/image-20250414133949788.png)
 
 ![image-20241230145037139](./README.assets/image-20241230145037139.png)
 
@@ -625,6 +632,10 @@ meme download
   <img src="./README.assets/img_v3_02h8_7ea23767-38c1-41e9-8b06-3a0743a5559g.jpg" alt="Image 1" style="width: 400px; height: auto; margin: 5px;">
    <img src="./README.assets/img_v3_02h8_1f93bcd8-0880-40b0-aeef-c21c77e7910g.jpg" alt="Image 1" style="width: 400px; height: auto; margin: 5px;">
 </div>
+【2024.4.13】诈骗哥最新日志
+
+https://mp.weixin.qq.com/s/lCAcxpPayPDJzc14FTLLiQ
+
 
 
 
@@ -645,6 +656,7 @@ meme download
 - 【2024 12.30】推送Bot V2.2蛇年贺岁版 新增抖音视频解析，视频号解析，塔罗牌功能，优化一些代码，修复一些Bug
 - 【2025.1.07】 推送Bot V2.2蛇年贺岁版功能更新，新增群聊消息总结，群聊发言排行榜，潜水榜，撤回消息监测，新增DeepSeek大模型
 - 【2025.02.27】推送Bot V2.3版本 删除飞书Wiki查询，删除微步查询，新增豆包、硅基流动等大模型，更改框架结构，配置文件架构，新增游戏功能，方便扩展。目前支持看图猜成语功能
+- 【2025.04.11】新增扣子，dify，图文对话，引用对话，好友图文对话，WebServer接口，MCP服务，语音AI回复，修复一些Bug
 ```
 
 ### 【2024.12.30】蛇年贺岁版
@@ -687,6 +699,14 @@ meme download
 新增游戏功能，看图猜成语，更新架构！
 
 ![image-20250227161550928](./README.assets/image-20250227161550928.png)
+
+### 【2025.04.11】WebServer服务&MCP上线
+
+![image-20250411211134811](./README.assets/image-20250411211134811.png)
+
+NGCBot-MCP-Server：
+
+https://github.com/ngc660sec/NGCBot-MCP
 
 
 

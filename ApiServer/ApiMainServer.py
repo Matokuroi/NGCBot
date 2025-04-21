@@ -1,6 +1,7 @@
 from ApiServer.AiServer.AiDialogue import AiDialogue
 from ApiServer.AiServer.AiDrawPicture import AiDrawPicture
 from ApiServer.AiServer.AiGraphicDialogue import AiGraphicDialogue
+from ApiServer.InterFaceServer.InterFaceApi import InterFaceApi
 import ApiServer.pluginServer as Ps
 
 
@@ -14,6 +15,15 @@ class ApiMainServer:
         self.Ad = AiDialogue()
         self.Adp = AiDrawPicture()
         self.Agd = AiGraphicDialogue()
+        self.Ifa = InterFaceApi()
+
+    def getAudioMsg(self, audioPath):
+        """
+        获取语音文本
+        :param audioPath:
+        :return:
+        """
+        return self.Ifa.getAudioMsg(audioPath)
 
     def getMusic(self, musicName):
         """
@@ -23,14 +33,14 @@ class ApiMainServer:
         """
         return Ps.Ha.getMusic(musicName)
 
-    def getDeepSeek(self, content, message):
-        """
-        deepSeek
-        :param content:
-        :param message:
-        :return:
-        """
-        return self.Ad.getDeepSeek(content, message)
+    # def getDeepSeek(self, content, message):
+    #     """
+    #     deepSeek
+    #     :param content:
+    #     :param message:
+    #     :return:
+    #     """
+    #     return self.Ad.getDeepSeek(content, message)
 
     def getTaLuo(self):
         """
@@ -129,23 +139,23 @@ class ApiMainServer:
         """
         return Ps.Ha.getDog()
 
-    def getAiPicDia(self, content, imagePath):
+    def getAiPicDia(self, content, imagePath, sender=None):
         """
         Ai 图文回复
         :param content:
         :param imagePath:
         :return:
         """
-        return self.Agd.getAiPicDia(content, imagePath)
+        return self.Agd.getAiPicDia(content, imagePath, sender=sender)
 
-    def getAi(self, content, sender):
+    def getAi(self, content, sender, systemMessage=None):
         """
         Ai对话调用接口
         :param content:
         :param sender: 发送者 群聊中则是room@+sender 好友私聊则是 sender
         :return:
         """
-        return self.Ad.getAi(content, sender)
+        return self.Ad.getAi(content, sender, systemMessage)
 
     def getAiPic(self, content):
         """

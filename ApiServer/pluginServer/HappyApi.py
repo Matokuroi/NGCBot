@@ -1,8 +1,8 @@
 from meme_generator import get_meme, get_meme_keys
 import FileCache.FileCacheServer as Fcs
+from ApiServer.InterFaceServer import *
 import Config.ConfigServer as Cs
 from OutPut.outPut import op
-import lz4.block as lb
 import requests
 import asyncio
 import random
@@ -32,81 +32,27 @@ class HappyApi:
         self.wechatVideoApi = configData['FunctionConfig']['HappyFunctionConfig']['WechatVideoConfig']['WechatVideoApi']
         self.taLuoApi = configData['FunctionConfig']['HappyFunctionConfig']['TaLuoConfig']['TaLuoApi']
         self.musicApi = configData['FunctionConfig']['HappyFunctionConfig']['MusicConfig']['MusicApi']
-
+        self.OnePicEmo = configData['EmoConfig']['OnePicEmo']
         # API密钥配置
         self.dpKey = configData['KeyConfig']['DpConfig']['DpKey']
 
-    def downloadFile(self, url, savePath):
-        """
-        通用下载文件函数
-        :param url:
-        :param savePath:
-        :return:
-        """
-        try:
-            content = requests.get(url, timeout=30, verify=True).content
-            if len(content) < 200:
-                return None
-            with open(savePath, mode='wb') as f:
-                f.write(content)
-            return savePath
-        except Exception as e:
-            op(f'[-]: 通用下载文件函数出现错误, 错误信息: {e}')
-            return None
-
     def getMusic(self, musicName):
         op(f'[*]: 正在调用点歌接口... ...')
-        musicApi = self.musicApi[0]
         try:
-            jsonData = requests.get(musicApi.format(musicName), verify=True, timeout=30).json()
-            songName = jsonData.get('title')
-            singerName = jsonData.get('singer')
-            songPic = jsonData.get('cover')
-            dataUrl = jsonData.get('link')
-            playUrl = jsonData.get('music_url')
-            xml_message = f"""<msg>
-            <appmsg appid="wx485a97c844086dc9" sdkver="0">
-                <title>{songName}</title>
-                <des>{singerName}</des>
-                <action></action>
-                <type>3</type>
-                <showtype>0</showtype>
-                <mediatagname></mediatagname>
-                <messageext></messageext>
-                <messageaction></messageaction>
-                <content></content>
-                <contentattr>0</contentattr>
-                <url>{dataUrl}</url>
-                <lowurl>{playUrl}</lowurl>
-                <dataurl>{playUrl}</dataurl>
-                <lowdataurl>{playUrl}</lowdataurl>
-                <appattach>
-                    <totallen>0</totallen>
-                    <attachid></attachid>
-                    <emoticonmd5></emoticonmd5>
-                    <fileext></fileext>
-                </appattach>
-                <extinfo></extinfo>
-                <sourceusername></sourceusername>
-                <sourcedisplayname></sourcedisplayname>
-                <commenturl></commenturl>
-                <songalbumurl>{songPic}</songalbumurl>
-                <md5></md5>
-            </appmsg>
-            <fromusername>wxid_hqdtktnqvw8e21</fromusername>
-            <scene>0</scene>
-            <appinfo>
-                <version>29</version>
-                <appname>摇一摇搜歌</appname>
-            </appinfo>
-            <commenturl></commenturl>
-        </msg>\x00"""
-            # 将文本编码成字节
-            text_bytes = xml_message.encode('utf-8')
-            # 使用 lz4 压缩
-            compressed_data = lb.compress(text_bytes, store_size=False, mode="high_compression")
-            # 将压缩后的数据转为十六进制字符串，以便存储到数据库
-            compressed_data_hex = compressed_data.hex()
+            params = {
+                'AppSecret': self.dpKey,
+                'songname': musicName,
+                'type': 'netease',
+                'num': '1'
+            }
+            jsonData = requests.get(self.musicApi, params=params, verify=True, timeout=30).json()
+            songData = jsonData.get('data')
+            songName = songData.get('title')
+            singerName = songData.get('author')
+            songPic = songData.get('pic')
+            dataUrl = songData.get('link')
+            playUrl = songData.get('url')
+            compressed_data_hex = Ifa.returnMusicXml(songName, singerName, dataUrl, playUrl, songPic)
             return compressed_data_hex
         except Exception as e:
             op(f'[-]: 点歌API出现错误, 错误信息: {e}')
@@ -129,7 +75,7 @@ class HappyApi:
                 Knowledge_expansion = result.get('Knowledge_expansion')
                 Card_meaning_extension = result.get('Card_meaning_extension')
                 e_image = result.get('e_image')
-                picPath = self.downloadFile(e_image, savePath)
+                picPath = Ifa.downloadFile(e_image, savePath)
                 content = f'描述: {Pai_Yi_deduction}\n\n建议: {core_prompt}\n\n描述: {Knowledge_expansion}\n\n建议: {Card_meaning_extension}'
                 return content, picPath
             return '', ''
@@ -151,10 +97,11 @@ class HappyApi:
             code = jsonData.get('code')
             if code == 200:
                 videoData = jsonData.get('data')
+                coverUrl = videoData.get('coverUrl')
                 description = videoData.get('description').replace("\n", "")
                 nickname = videoData.get('nickname')
                 videoUrl = videoData.get('url')
-                content = f'视频描述: {description}\n视频作者: {nickname}\n视频链接: {videoUrl}'
+                content = f'视频描述: {description}\n视频作者: {nickname}\n视频封面: {coverUrl}\n\n视频链接: {videoUrl}'
                 return content
             elif code == 202:
                 time.sleep(200)
@@ -179,7 +126,7 @@ class HappyApi:
                 videoData = jsonData.get('data')
                 videoUrl = videoData.get('video_url')
                 savePath = Fcs.returnVideoCacheFolder() + '/' + str(int(time.time() * 1000)) + '.mp4'
-                savePath = self.downloadFile(videoUrl, savePath)
+                savePath = Ifa.downloadFile(videoUrl, savePath)
                 if savePath:
                     return savePath
             return None
@@ -221,10 +168,10 @@ class HappyApi:
         op(f'[*]: 正在调用美女图片Api接口... ...')
         picUrl = random.choice(self.picUrlList)
         savePath = Fcs.returnPicCacheFolder() + '/' + str(int(time.time() * 1000)) + '.jpg'
-        picPath = self.downloadFile(picUrl, savePath)
+        picPath = Ifa.downloadFile(picUrl, savePath)
         if not picPath:
             for picUrl in self.picUrlList:
-                picPath = self.downloadFile(picUrl, savePath)
+                picPath = Ifa.downloadFile(picUrl, savePath)
                 if picPath:
                     break
                 continue
@@ -238,10 +185,10 @@ class HappyApi:
         op(f'[*]: 正在调用美女视频Api接口... ...')
         videoUrl = random.choice(self.videoUrlList)
         savePath = Fcs.returnVideoCacheFolder() + '/' + str(int(time.time() * 1000)) + '.mp4'
-        videoPath = self.downloadFile(videoUrl, savePath)
+        videoPath = Ifa.downloadFile(videoUrl, savePath)
         if not videoPath:
             for videoUrl in self.videoUrlList:
-                videoPath = self.downloadFile(videoUrl, savePath)
+                videoPath = Ifa.downloadFile(videoUrl, savePath)
                 if videoPath:
                     break
                 continue
@@ -257,10 +204,10 @@ class HappyApi:
         try:
             jsonData = requests.get(self.fishApi, timeout=30).json()
             fishUrl = jsonData.get('data')['url']
-            fishPath = self.downloadFile(url=fishUrl, savePath=savePath)
+            fishPath = Ifa.downloadFile(url=fishUrl, savePath=savePath)
             if not fishPath:
                 for i in range(2):
-                    fishPath = self.downloadFile(self.fishApi, savePath)
+                    fishPath = Ifa.downloadFile(self.fishApi, savePath)
                     if fishPath:
                         break
                     continue
@@ -314,35 +261,42 @@ class HappyApi:
         op(f'[*]: 正在调用表情包Api接口... ...')
         if not avatarPathList:
             op(f'[-]: 表情包Api接口出现错误, 错误信息: avatarPathList不能为空')
-            return
-        if not avatarPathList:
-            raise 'avatarPathList None'
-        if not memeKey:
-            memeKey = random.choices(get_meme_keys())[0]
-
-        savePath = Fcs.returnPicCacheFolder() + '/' + str(int(time.time() * 1000)) + '.gif'
-        try:
-            async def makeEmo():
-                meme = get_meme(memeKey)
-                result = await meme(images=avatarPathList, texts=[], args={"circle": False})
-                with open(savePath, "wb") as f:
-                    f.write(result.getvalue())
-
-            loop = asyncio.new_event_loop()
-            loop.run_until_complete(makeEmo())
-            # 图片大小判断 如果大于1mb 就以图片形式发送
-            file_size_bytes = os.path.getsize(savePath)
-            size_limit_bytes = 1024 * 1024
-            sizeBool = file_size_bytes <= size_limit_bytes
-            return savePath, sizeBool
-        except Exception as e:
-            op(f'[-]: 表情包Api接口出现错误, 错误信息: {e}')
             return None, None
+        savePath = Fcs.returnPicCacheFolder() + '/' + str(int(time.time() * 1000)) + '.gif'
+        retry_count = 0
+        while retry_count < 3:  # 失败则重试 最多3次
+            try:
+                if memeKey is None:
+                    memeKey = random.choice(list(self.OnePicEmo.values()))
+
+                async def makeEmo():
+                    meme = get_meme(memeKey)
+                    params = {
+                        "images": avatarPathList,
+                        "texts": [],
+                        "args": {"circle": False}
+                    }
+                    result = await meme(**params)
+                    with open(savePath, "wb") as f:
+                        f.write(result.getvalue())
+
+                loop = asyncio.new_event_loop()
+                loop.run_until_complete(makeEmo())
+                file_size_bytes = os.path.getsize(savePath)
+                sizeBool = file_size_bytes <= (1024 * 1024)  # 1MB
+                return savePath, sizeBool
+            except Exception as e:
+                op(f'[-]: 表情包Api接口第 {retry_count + 1} 次尝试失败, 错误信息: {e}')
+                retry_count += 1
+                memeKey = None
+        op(f'[-]: 表情包Api接口失败3次, 不再生成！')
+        return None, None
 
 
 if __name__ == '__main__':
     Ha = HappyApi()
-    print(Ha.getDog())
+    print(Ha.getMusic('晴天'))
+    # print(Ha.getDog())
     # print(Ha.getKfc())
     # Ha.getEmoticon('C:/Users/Administrator/Desktop/NGCBot V2.2/avatar.jpg')
     # print(Ha.getShortPlay('霸道总裁爱上我'))
